@@ -193,10 +193,9 @@ jobs:
         }
       displayName: Generate SBOMs
       condition: and(succeeded(), ne(variables['BuildImages.builtImages'], ''))
-  - ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
-    - template: /eng/common/templates/jobs/${{ format('../steps/test-images-{0}-client.yml', parameters.dockerClientOS) }}@self
-      parameters:
-        condition: ne(variables.testScriptPath, '')
+  - template: /eng/common/templates/jobs/${{ format('../steps/test-images-{0}-client.yml', parameters.dockerClientOS) }}@self
+    parameters:
+      condition: ne(variables.testScriptPath, '')
   - ${{ if and(eq(variables['System.TeamProject'], parameters.internalProjectName), ne(variables['Build.Reason'], 'PullRequest')) }}:
     - template: /eng/common/templates/steps/publish-artifact.yml@self
       parameters:
