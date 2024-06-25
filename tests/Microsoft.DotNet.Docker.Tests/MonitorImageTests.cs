@@ -117,6 +117,7 @@ namespace Microsoft.DotNet.Docker.Tests
         [MemberData(nameof(GetMonitorImageData))]
         public void VerifyEnvironmentVariables(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyEnvironmentVariables");
             List<EnvironmentVariableInfo> variables = new List<EnvironmentVariableInfo>();
             variables.AddRange(ProductImageTests.GetCommonEnvironmentVariables());
 
@@ -148,6 +149,7 @@ namespace Microsoft.DotNet.Docker.Tests
                 imageData.GetImage(ImageRepo, DockerHelper),
                 imageData,
                 DockerHelper);
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyEnvironmentVariables");
         }
 
         /// <summary>
@@ -371,6 +373,7 @@ namespace Microsoft.DotNet.Docker.Tests
             AuthenticationHeaderValue authorizationHeader = null
             )
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyMonitorAsync");
             GetNames(imageData, out string monitorImageName, out string monitorContainerName, out _);
             try
             {
@@ -418,6 +421,7 @@ namespace Microsoft.DotNet.Docker.Tests
             {
                 DockerHelper.DeleteContainer(monitorContainerName);
             }
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyMonitorAsync");
         }
 
         /// <summary>
@@ -443,6 +447,7 @@ namespace Microsoft.DotNet.Docker.Tests
             Action<DockerRunArgsBuilder> monitorRunArgsCallback = null,
             Action<DockerRunArgsBuilder> sampleRunArgsCallback = null)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyScenarioAsync");
             GetNames(productImageData, out string monitorImageName, out string monitorContainerName, out int monitorUser);
             GetNames(sampleImageData, out string sampleImageName, out string sampleContainerName, out int sampleUser);
 
@@ -536,6 +541,8 @@ namespace Microsoft.DotNet.Docker.Tests
                     DockerHelper.DeleteVolume(tmpVolumeName);
                 }
             }
+
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyScenarioAsync");
         }
 
         private static int? AdjustMonitorUserAndCalculateVolumeOwner(bool listenMode, int sampleUid, int monitorUid, DockerRunArgsBuilder monitorArgsBuilder)

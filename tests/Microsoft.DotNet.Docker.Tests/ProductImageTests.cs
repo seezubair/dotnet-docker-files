@@ -31,14 +31,17 @@ namespace Microsoft.DotNet.Docker.Tests
         /// </summary>
         protected void VerifyCommonNoSasToken(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyCommonNoSasToken");
             string imageTag = imageData.GetImage(ImageRepo, DockerHelper);
             string historyContents = DockerHelper.GetHistory(imageTag);
             Match match = Regex.Match(historyContents, @"=\?(sig|\S+&sig)=\S+");
             Assert.False(match.Success, $"A SAS token was detected in the Docker history of '{imageTag}'.");
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyCommonNoSasToken");
         }
 
         protected void VerifyCommonInsecureFiles(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyCommonInsecureFiles");
             if (imageData.OS.Contains("alpine") && imageData.IsArm)
             {
                 return;
@@ -96,10 +99,13 @@ namespace Microsoft.DotNet.Docker.Tests
                 .Where(line => !imageData.IsDistroless || line != $"{rootFsPathWithTrailingSlash}home/app");
 
             Assert.Empty(lines);
+
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyCommonInsecureFiles");
         }
 
         protected void VerifyCommonDefaultUser(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyCommonDefaultUser");
             string imageTag = imageData.GetImage(ImageRepo, DockerHelper);
             string actualUser = DockerHelper.GetImageUser(imageTag);
 
@@ -129,10 +135,12 @@ namespace Microsoft.DotNet.Docker.Tests
             Assert.Equal(expectedUser, actualUser);
 
             VerifyNonRootUID(imageData);
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyCommonDefaultUser");
         }
 
         protected void VerifyNonRootUID(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyNonRootUID");
             if ((imageData.Version.Major == 6 && (!imageData.IsDistroless || imageData.OS.StartsWith(OS.Mariner)))
                 || imageData.IsWindows)
             {
@@ -164,6 +172,7 @@ namespace Microsoft.DotNet.Docker.Tests
             Assert.True(uid >= 1000);
             // Debian has a UID_MAX of 60000
             Assert.True(uid <= 60000);
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyNonRootUID");
         }
 
         private IEnumerable<string> GetInstalledRpmPackages(ProductImageData imageData)

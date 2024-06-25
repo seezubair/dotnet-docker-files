@@ -26,6 +26,7 @@ namespace Microsoft.DotNet.Docker.Tests
         [MemberData(nameof(GetImageData))]
         public async Task VerifyAppScenario(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyAppScenario");
             if (imageData.ImageVariant == DotNetImageVariant.Composite)
             {
                 OutputHelper.WriteLine(
@@ -45,12 +46,14 @@ namespace Microsoft.DotNet.Docker.Tests
                 ? new WebScenarioComposite(imageData, DockerHelper, OutputHelper)
                 : new WebScenario(imageData, DockerHelper, OutputHelper);
             await scenario.ExecuteAsync();
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyAppScenario");
         }
 
         [DotNetTheory]
         [MemberData(nameof(GetImageData))]
         public void VerifyEnvironmentVariables(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyEnvironmentVariables");
             List<EnvironmentVariableInfo> variables = new();
 
             // Skip runtime version check due to https://github.com/dotnet/dotnet-docker/issues/4834.
@@ -67,23 +70,28 @@ namespace Microsoft.DotNet.Docker.Tests
             }
 
             base.VerifyCommonEnvironmentVariables(imageData, variables);
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyEnvironmentVariables");
         }
 
         [DotNetTheory]
         [MemberData(nameof(GetImageData))]
         public void VerifyPackageInstallation(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyPackageInstallation");
             VerifyExpectedInstalledRpmPackages(
                     imageData,
                     GetExpectedRpmPackagesInstalled(imageData)
                         .Concat(RuntimeImageTests.GetExpectedRpmPackagesInstalled(imageData)));
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyPackageInstallation");
         }
 
         [LinuxImageTheory]
         [MemberData(nameof(GetImageData))]
         public void VerifyInstalledPackages(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyInstalledPackages");
             ProductImageTests.VerifyInstalledPackagesBase(imageData, ImageRepo, DockerHelper, OutputHelper);
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyInstalledPackages");
         }
 
         [LinuxImageTheory]

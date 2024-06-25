@@ -26,6 +26,7 @@ namespace Microsoft.DotNet.Docker.Tests
         [MemberData(nameof(GetImageData))]
         public async Task VerifyAotAppScenario(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyAotAppScenario");
             if (!imageData.ImageVariant.HasFlag(DotNetImageVariant.AOT))
             {
                 OutputHelper.WriteLine("Test is only relevant to AOT images.");
@@ -42,6 +43,7 @@ namespace Microsoft.DotNet.Docker.Tests
 
             using WebApiAotScenario testScenario = new(imageData, DockerHelper, OutputHelper);
             await testScenario.ExecuteAsync();
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyAotAppScenario");
         }
 
         [LinuxImageTheory]
@@ -92,12 +94,14 @@ namespace Microsoft.DotNet.Docker.Tests
         [MemberData(nameof(GetImageData))]
         public void VerifyDistrolessOSReleaseInfo(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyDistrolessOSReleaseInfo");
             if (!imageData.IsDistroless)
             {
                 OutputHelper.WriteLine("This test is only relevant to distroless images.");
                 return;
             }
             Assert.NotEmpty(GetOSReleaseInfo(imageData, ImageRepo, DockerHelper));
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyDistrolessOSReleaseInfo");
         }
 
         private static string GetOSReleaseInfo(
@@ -115,7 +119,9 @@ namespace Microsoft.DotNet.Docker.Tests
         [MemberData(nameof(GetImageData))]
         public void VerifyInstalledPackages(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyInstalledPackages");
             VerifyInstalledPackagesBase(imageData, ImageRepo, DockerHelper, OutputHelper);
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyInstalledPackages");
         }
 
         internal static string[] GetExpectedRpmPackagesInstalled(ProductImageData imageData) =>

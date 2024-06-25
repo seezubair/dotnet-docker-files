@@ -56,6 +56,7 @@ namespace Microsoft.DotNet.Docker.Tests
         [MemberData(nameof(GetImageData))]
         public async void VerifyBlazorWasmScenario(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyBlazorWasmScenario");
             bool isAlpine = imageData.OS.StartsWith(OS.Alpine);
 
             // Microsoft.NETCore.App.Runtime.Mono.linux-musl-arm* package does not exist
@@ -79,6 +80,7 @@ namespace Microsoft.DotNet.Docker.Tests
 
             using BlazorWasmScenario testScenario = new(imageData, DockerHelper, OutputHelper, useWasmTools);
             await testScenario.ExecuteAsync();
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyBlazorWasmScenario");
         }
 
         [LinuxImageTheory]
@@ -99,6 +101,7 @@ namespace Microsoft.DotNet.Docker.Tests
         [MemberData(nameof(GetImageData))]
         public void VerifyEnvironmentVariables(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyEnvironmentVariables");
             string imageName = imageData.GetImage(ImageRepo, DockerHelper);
             string version = imageData.GetProductVersion(ImageRepo, ImageRepo, DockerHelper);
 
@@ -124,19 +127,23 @@ namespace Microsoft.DotNet.Docker.Tests
             }
 
             EnvironmentVariableInfo.Validate(variables, imageName, imageData, DockerHelper);
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyEnvironmentVariables");
         }
 
         [DotNetTheory]
         [MemberData(nameof(GetImageData))]
         public void VerifyPowerShellScenario_DefaultUser(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyPowerShellScenario_DefaultUser");
             PowerShellScenario_Execute(imageData, null);
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyPowerShellScenario_DefaultUser");
         }
 
         [DotNetTheory]
         [MemberData(nameof(GetImageData))]
         public void VerifyPowerShellScenario_NonDefaultUser(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyPowerShellScenario_NonDefaultUser");
             string optRunArgs = "-u 12345:12345"; // Linux containers test as non-root user
             if (!DockerHelper.IsLinuxContainerModeEnabled)
             {
@@ -145,6 +152,7 @@ namespace Microsoft.DotNet.Docker.Tests
             }
 
             PowerShellScenario_Execute(imageData, optRunArgs);
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyPowerShellScenario_NonDefaultUser");
         }
 
         /// <summary>
@@ -154,6 +162,7 @@ namespace Microsoft.DotNet.Docker.Tests
         [MemberData(nameof(GetImageData))]
         public async Task VerifyDotnetFolderContents(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyDotnetFolderContents");
             // Skip test due to https://github.com/dotnet/dotnet-docker/issues/4841
             // Re-enable for release in main branch.
             if (imageData.IsWindows)
@@ -217,12 +226,15 @@ namespace Microsoft.DotNet.Docker.Tests
 
             Assert.Equal(expectedDotnetFiles.Count(), actualDotnetFiles.Count());
             Assert.False(hasFileContentDifference, "There are file content differences. Check the log output.");
+
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyDotnetFolderContents");
         }
 
         [DotNetTheory]
         [MemberData(nameof(GetImageData))]
         public void VerifyInstalledRpmPackages(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyInstalledRpmPackages");
             VerifyExpectedInstalledRpmPackages(
                 imageData,
                 new string[]
@@ -234,20 +246,26 @@ namespace Microsoft.DotNet.Docker.Tests
                     $"netstandard-targeting-pack-2.1"
                 }
                 .Concat(AspnetImageTests.GetExpectedRpmPackagesInstalled(imageData)));
+
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyInstalledRpmPackages");
         }
 
         [LinuxImageTheory]
         [MemberData(nameof(GetImageData))]
         public void VerifyInstalledPackages(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyInstalledPackages");
             ProductImageTests.VerifyInstalledPackagesBase(imageData, ImageRepo, DockerHelper, OutputHelper);
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyInstalledPackages");
         }
 
         [DotNetTheory]
         [MemberData(nameof(GetImageData))]
         public void VerifyDefaultUser(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyDefaultUser");
             VerifyCommonDefaultUser(imageData);
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyDefaultUser");
         }
 
         /// <summary>
@@ -257,6 +275,7 @@ namespace Microsoft.DotNet.Docker.Tests
         [MemberData(nameof(GetImageData))]
         public void VerifyGitInstallation(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyGitInstallation");
             if (!DockerHelper.IsLinuxContainerModeEnabled && imageData.Version.Major == 6)
             {
                 OutputHelper.WriteLine("Git is not installed on Windows containers older than .NET 6");
@@ -268,6 +287,8 @@ namespace Microsoft.DotNet.Docker.Tests
                 name: imageData.GetIdentifier($"git"),
                 command: "git version"
             );
+
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyGitInstallation");
         }
 
         /// <summary>
@@ -277,12 +298,14 @@ namespace Microsoft.DotNet.Docker.Tests
         [MemberData(nameof(GetImageData))]
         public void VerifyTarInstallation(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyTarInstallation");
             // tar should exist in the SDK for both Linux and Windows. The --version option works in either OS
             DockerHelper.Run(
                 image: imageData.GetImage(DotNetImageRepo.SDK, DockerHelper),
                 name: imageData.GetIdentifier("tar"),
                 command: "tar --version"
             );
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyTarInstallation");
         }
 
         private IEnumerable<SdkContentFileInfo> GetActualSdkContents(ProductImageData imageData)

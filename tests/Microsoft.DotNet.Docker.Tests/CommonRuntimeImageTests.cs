@@ -60,6 +60,7 @@ namespace Microsoft.DotNet.Docker.Tests
 
         protected void VerifyCommonShellNotInstalledForDistroless(ProductImageData imageData)
         {
+            System.Console.WriteLine($"Start: {GetType().Name}.VerifyCommonShellNotInstalledForDistroless");
             if (!imageData.IsDistroless)
             {
                 OutputHelper.WriteLine("Skipping test for non-distroless platform.");
@@ -84,6 +85,7 @@ namespace Microsoft.DotNet.Docker.Tests
                 );
 
             Assert.Contains("Exit code: 127", ex.Message);
+            System.Console.WriteLine($"End: {GetType().Name}.VerifyCommonShellNotInstalledForDistroless");
         }
     }
 }

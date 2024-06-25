@@ -29,14 +29,17 @@ public class AspireDashboardImageTests(ITestOutputHelper outputHelper) : CommonR
     [MemberData(nameof(GetImageData))]
     public async Task VerifyDashboardEndpoint(ProductImageData imageData)
     {
+        System.Console.WriteLine("Start: AspireDashboardImageTests.VerifyDashboardEndpoint");
         AspireDashboardBasicScenario testScenario = new(DashboardWebPort, imageData, DockerHelper, OutputHelper);
         await testScenario.ExecuteAsync();
+        System.Console.WriteLine("End: AspireDashboardImageTests.VerifyDashboardEndpoint");
     }
 
     [DotNetTheory]
     [MemberData(nameof(GetImageData))]
     public void VerifyEnvironmentVariables(ProductImageData imageData)
     {
+        System.Console.WriteLine("Start: AspireDashboardImageTests.VerifyEnvironmentVariables");
         IEnumerable<EnvironmentVariableInfo> expectedVariables =
         [
             // Unset ASPNETCORE_HTTP_PORTS from base image
@@ -50,18 +53,21 @@ public class AspireDashboardImageTests(ITestOutputHelper outputHelper) : CommonR
 
         string imageTag = imageData.GetImage(ImageRepo, DockerHelper);
         EnvironmentVariableInfo.Validate(expectedVariables, imageTag, imageData, DockerHelper);
+        System.Console.WriteLine("End: AspireDashboardImageTests.VerifyEnvironmentVariables");
     }
 
     [LinuxImageTheory]
     [MemberData(nameof(GetImageData))]
     public void VerifyInstalledPackages(ProductImageData imageData)
     {
+        System.Console.WriteLine("Start: AspireDashboardImageTests.VerifyInstalledPackages");
         // Aspire Dashboard image is based on an "extra" image, but doesn't have the "extra" qualifier itself, so we
         // need to make sure we compare the correct lists of packages.
         IEnumerable<string> expectedPackages = GetExpectedPackages(imageData with { ImageVariant = DotNetImageVariant.Extra }, ImageRepo);
         IEnumerable<string> actualPackages = GetInstalledPackages(imageData, ImageRepo, DockerHelper, [ AppPath ]);
 
         ComparePackages(expectedPackages, actualPackages, imageData.IsDistroless, OutputHelper);
+        System.Console.WriteLine("End: AspireDashboardImageTests.VerifyInstalledPackages");
     }
 
     [LinuxImageTheory]
