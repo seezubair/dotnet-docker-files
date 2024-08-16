@@ -45,7 +45,7 @@ RUN dotnet workload install --configfile NuGet.config --skip-manifest-update was
 
 WORKDIR /source/app
 COPY app/*.csproj .
-RUN dotnet restore -r $rid
+RUN dotnet restore -r browser-wasm
 
 COPY app/ .
 RUN dotnet build --no-restore
@@ -54,7 +54,7 @@ RUN dotnet build --no-restore
 FROM blazorwasm_build AS blazorwasm_publish
 
 ARG rid
-RUN dotnet publish -r $rid -c Release --self-contained true -o out
+RUN dotnet publish -r browser-wasm -c Release --self-contained true -o out
 
 
 FROM build AS test
